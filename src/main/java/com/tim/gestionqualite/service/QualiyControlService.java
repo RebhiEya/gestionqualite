@@ -13,6 +13,7 @@ public class QualiyControlService {
     QualityControlRepository qualityControlRepository;
 
     public List<QualityControl> retrieveAllQualityControls() {
+
         return (List<QualityControl>) qualityControlRepository.findAll();
     }
 
