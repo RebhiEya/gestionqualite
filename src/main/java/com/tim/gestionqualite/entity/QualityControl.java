@@ -5,10 +5,10 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -24,5 +24,62 @@ public class QualityControl implements Serializable {
     private Date date;
     private String state;
     private String description;
+    @OneToMany(mappedBy  = "qualityControl")
+    private List<ControlCheckList> controlCheckList;
 
+    public Long getIdQualityControl() {
+        return idQualityControl;
+    }
+
+    public void setIdQualityControl(Long idQualityControl) {
+        this.idQualityControl = idQualityControl;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public String getInternalReference() {
+        return internalReference;
+    }
+
+    public void setInternalReference(String internalReference) {
+        this.internalReference = internalReference;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<ControlCheckList> getControlCheckList() {
+        return controlCheckList;
+    }
+
+    public void setControlCheckList(List<ControlCheckList> controlCheckList) {
+        this.controlCheckList = controlCheckList;
+    }
 }

@@ -26,8 +26,8 @@ public class QualityControlController {
 
     @PostMapping("/add-qualiyControl")
     @ResponseBody
-    public QualityControl addProduit(@RequestBody QualityControl q) {
-        QualityControl qualityControl = qualiyControlService.addQualityControl(q);
+    public QualityControl addQualityControlWithChecklists(@RequestBody QualityControl q) {
+        QualityControl qualityControl = qualiyControlService.addQualityControlWithChecklists(q , q.getControlCheckList());
         return qualityControl;
     }
 }
