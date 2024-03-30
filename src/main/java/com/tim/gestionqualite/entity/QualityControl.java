@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,8 +25,21 @@ public class QualityControl implements Serializable {
     private Date date;
     private String state;
     private String description;
-    @OneToMany(mappedBy  = "qualityControl")
-    private List<ControlCheckList> controlCheckList;
+    @ManyToMany
+    @JoinTable(
+            name = "quality_control_checklist",
+            joinColumns = @JoinColumn(name = "quality_control_id"),
+            inverseJoinColumns = @JoinColumn(name = "control_checklist_id")
+    )
+    private List<ControlCheckList> controlCheckLists = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "quality_control_defect",
+            joinColumns = @JoinColumn(name = "quality_control_id"),
+            inverseJoinColumns = @JoinColumn(name = "control_defect_id")
+    )
+    private List<ControlDefect> controlDefect = new ArrayList<>();
 
     public Long getIdQualityControl() {
         return idQualityControl;
@@ -75,11 +89,19 @@ public class QualityControl implements Serializable {
         this.description = description;
     }
 
-    public List<ControlCheckList> getControlCheckList() {
-        return controlCheckList;
+    public List<ControlCheckList> getControlCheckLists() {
+        return controlCheckLists;
     }
 
-    public void setControlCheckList(List<ControlCheckList> controlCheckList) {
-        this.controlCheckList = controlCheckList;
+    public void setControlCheckLists(List<ControlCheckList> controlCheckLists) {
+        this.controlCheckLists = controlCheckLists;
+    }
+
+    public List<ControlDefect> getControlDefect() {
+        return controlDefect;
+    }
+
+    public void setControlDefect(List<ControlDefect> controlDefect) {
+        this.controlDefect = controlDefect;
     }
 }

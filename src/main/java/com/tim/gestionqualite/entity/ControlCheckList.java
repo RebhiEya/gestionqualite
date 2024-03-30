@@ -4,18 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Table(name = "ControlCheckList")
 @Entity
-public class ControlCheckList {
+public class ControlCheckList implements Serializable  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idControlCheckList")
+    @Column(name = "idControlCheck")
     private Long idControlCheckList;
-    private String Category;
+    private String category;
     private String criteria;
     private String operation;
 
@@ -27,9 +31,8 @@ public class ControlCheckList {
     private String description;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "qualityControl_id")
-    private QualityControl qualityControl;
+    @ManyToMany(mappedBy = "controlCheckLists")
+    private List<QualityControl> qualityControls = new ArrayList<>();
 
     public Long getIdControlCheckList() {
         return idControlCheckList;
@@ -40,11 +43,11 @@ public class ControlCheckList {
     }
 
     public String getCategory() {
-        return Category;
+        return category;
     }
 
     public void setCategory(String category) {
-        Category = category;
+        this.category = category;
     }
 
     public String getCriteria() {
@@ -95,11 +98,11 @@ public class ControlCheckList {
         this.description = description;
     }
 
-    public QualityControl getQualityControl() {
-        return qualityControl;
+    public List<QualityControl> getQualityControls() {
+        return qualityControls;
     }
 
-    public void setQualityControl(QualityControl qualityControl) {
-        this.qualityControl = qualityControl;
+    public void setQualityControls(List<QualityControl> qualityControls) {
+        this.qualityControls = qualityControls;
     }
 }
