@@ -22,11 +22,11 @@ public class QualityControlRequest {
     }
 
     public List<ControlCheckList> getControlCheckLists() {
-        return qualityControl.getControlCheckList();
+        return qualityControl.getControlCheckLists();
     }
 
     public void setControlCheckLists(List<ControlCheckList> controlCheckLists) {
-        qualityControl.setControlCheckList(controlCheckLists);
+        qualityControl.setControlCheckLists(controlCheckLists);
     }
 
     public List<ControlDefect> getControlDefect() {

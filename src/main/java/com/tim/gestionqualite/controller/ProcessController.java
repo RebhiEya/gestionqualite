@@ -2,6 +2,7 @@ package com.tim.gestionqualite.controller;
 
 
 import com.tim.gestionqualite.entity.Process;
+import com.tim.gestionqualite.entity.ProcessChecklist;
 import com.tim.gestionqualite.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public class ProcessController {
         return ResponseEntity.ok(createdProcess);
     }
     @PostMapping("/assign-checklist-to-process/{processId}/{checklistId}")
-    public ResponseEntity<Process> assignChecklistToProcess(@PathVariable Long processId, @PathVariable Long checklistId) {
-        Process createdProcess = processService.assignChecklistToProcess(processId, checklistId);
+    public ResponseEntity<Process> assignChecklistToProcess(@PathVariable Long processId, @RequestBody ProcessChecklist processChecklist) {
+        Process createdProcess = processService.addAndAssignChecklistToProcess(processId, processChecklist);
         return ResponseEntity.ok(createdProcess);
     }
 

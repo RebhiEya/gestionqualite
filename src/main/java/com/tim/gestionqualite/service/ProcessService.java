@@ -31,10 +31,10 @@ public class ProcessService {
         }
         return createdProcess;
     }
-    public Process assignChecklistToProcess(Long processId, Long checklistId) {
+    public Process addAndAssignChecklistToProcess(Long processId , ProcessChecklist processChecklist) {
+        processChecklist = processCheklistRepository.save(processChecklist);
         Process process = processRepository.findById(processId).orElseThrow(() -> new IllegalArgumentException("Process not found"));
-        ProcessChecklist checklist = processCheklistRepository.findById(checklistId).orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
-        process.getChecklists().add(checklist);
+        process.getChecklists().add(processChecklist);
         processRepository.save(process);
         return process;
     }

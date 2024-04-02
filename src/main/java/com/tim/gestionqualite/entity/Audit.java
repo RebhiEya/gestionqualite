@@ -8,6 +8,7 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -44,6 +45,32 @@ public class Audit implements Serializable {
     )
     private Set<ProcessChecklist> checklists = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "audit_team",
+            joinColumns = @JoinColumn(name = "audit_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
+    private Set<Team> teams = new HashSet<>();
+
+    @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL)
+    private List<AuditFile> auditFiles;
+
+    public List<AuditFile> getAuditFiles() {
+        return auditFiles;
+    }
+
+    public void setAuditFiles(List<AuditFile> auditFiles) {
+        this.auditFiles = auditFiles;
+    }
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
+    }
 
     public Set<Process> getProcesses() {
         return processes;
