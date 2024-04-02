@@ -22,7 +22,7 @@ public class Audit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idAudit")
     private Long idAudit;
-    private Category category;
+    private String category;
     private String designation;
     private Date startDate;
     private Date endDate;
@@ -96,11 +96,11 @@ public class Audit implements Serializable {
         this.idAudit = idAudit;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
