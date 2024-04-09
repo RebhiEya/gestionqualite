@@ -25,8 +25,9 @@ public class Process implements Serializable {
     private String weakness;
     private String strength;
 
-    @ManyToMany(mappedBy = "processes")
-    private Set<Audit> audits = new HashSet<>();
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AuditProcessChecklist> auditProcessChecklist = new HashSet<>();
+
 
     @ManyToMany
     @JoinTable(
@@ -34,7 +35,7 @@ public class Process implements Serializable {
             joinColumns = @JoinColumn(name = "process_id"),
             inverseJoinColumns = @JoinColumn(name = "checklist_id")
     )
-    private Set<ProcessChecklist> checklists = new HashSet<>();
+    private Set<ProcessChecklist> processChecklist = new HashSet<>();
 
     public Long getIdProcess() {
         return idProcess;
@@ -76,19 +77,27 @@ public class Process implements Serializable {
         this.strength = strength;
     }
 
-    public Set<Audit> getAudits() {
-        return audits;
+    public Set<AuditProcessChecklist> getAuditProcessChecklists() {
+        return auditProcessChecklist;
     }
 
-    public void setAudits(Set<Audit> audits) {
-        this.audits = audits;
+    public void setAuditProcessChecklists(Set<AuditProcessChecklist> auditProcessChecklist) {
+        this.auditProcessChecklist = auditProcessChecklist;
     }
 
-    public Set<ProcessChecklist> getChecklists() {
-        return checklists;
+    public Set<AuditProcessChecklist> getAuditProcessChecklist() {
+        return auditProcessChecklist;
     }
 
-    public void setChecklists(Set<ProcessChecklist> checklists) {
-        this.checklists = checklists;
+    public void setAuditProcessChecklist(Set<AuditProcessChecklist> auditProcessChecklist) {
+        this.auditProcessChecklist = auditProcessChecklist;
+    }
+
+    public Set<ProcessChecklist> getProcessChecklist() {
+        return processChecklist;
+    }
+
+    public void setProcessChecklist(Set<ProcessChecklist> processChecklist) {
+        this.processChecklist = processChecklist;
     }
 }

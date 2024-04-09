@@ -42,7 +42,7 @@ public class AuditService {
         if (processId != null) {
             Process process = processRepository.findById(processId).orElseThrow(() -> new IllegalArgumentException("Process not found"));
 
-            if (!audit.getProcesses().contains(process)) {
+          /*  if (!audit.getProcesses().contains(process)) {
                 audit.getProcesses().add(process);
                 auditRepository.save(audit);
             }
@@ -53,7 +53,7 @@ public class AuditService {
                         audit.getChecklists().add(checklist);
                     }
                 }
-            }
+            }*/
         }
         auditRepository.save(audit);
         return audit;
@@ -76,10 +76,10 @@ public class AuditService {
             Process process = processRepository.findById(processId)
                     .orElseThrow(() -> new IllegalArgumentException("Process not found"));
 
-            if (!audit.getProcesses().contains(process)) {
+            /*if (!audit.getProcesses().contains(process)) {
                 audit.getProcesses().add(process);
             }
-
+*/
 
             // Mise à jour des listes de contrôle associées à l'audit
             if (checklistIds != null) {
@@ -87,9 +87,9 @@ public class AuditService {
                     ProcessChecklist checklist = processChecklistRepository.findById(checklistId)
                             .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
 
-                    if (process.getChecklists().contains(checklist)) {
+                   /* if (process.getChecklists().contains(checklist)) {
                         audit.getChecklists().add(checklist);
-                    }
+                    }*/
                 }
             }
         }

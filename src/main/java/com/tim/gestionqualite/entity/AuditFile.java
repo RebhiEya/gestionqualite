@@ -12,8 +12,6 @@ import java.util.Date;
 @ToString
 @Table(name = "AuditFile")
 @Entity
-@Getter
-@Setter
 public class AuditFile implements Serializable {
 
     @Id
@@ -27,4 +25,44 @@ public class AuditFile implements Serializable {
     @ManyToOne
     @JoinColumn(name = "audit_id")
     private Audit audit;
+
+    public Long getIdFile() {
+        return idFile;
+    }
+
+    public void setIdFile(Long idFile) {
+        this.idFile = idFile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
+    }
 }

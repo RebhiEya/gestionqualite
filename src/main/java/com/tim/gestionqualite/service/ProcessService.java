@@ -26,7 +26,7 @@ public class ProcessService {
         if (checklistId != null) {
             ProcessChecklist checklist = processCheklistRepository.findById(checklistId)
                     .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
-            createdProcess.getChecklists().add(checklist);
+            createdProcess.getProcessChecklist().add(checklist);
             processRepository.save(createdProcess);
         }
         return createdProcess;
@@ -34,7 +34,7 @@ public class ProcessService {
     public Process addAndAssignChecklistToProcess(Long processId , ProcessChecklist processChecklist) {
         processChecklist = processCheklistRepository.save(processChecklist);
         Process process = processRepository.findById(processId).orElseThrow(() -> new IllegalArgumentException("Process not found"));
-        process.getChecklists().add(processChecklist);
+        process.getProcessChecklist().add(processChecklist);
         processRepository.save(process);
         return process;
     }

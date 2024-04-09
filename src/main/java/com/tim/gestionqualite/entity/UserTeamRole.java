@@ -1,11 +1,20 @@
 package com.tim.gestionqualite.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Table(name = "userTeamRole")
+@Entity
 public class UserTeamRole implements Serializable {
 
     @Id

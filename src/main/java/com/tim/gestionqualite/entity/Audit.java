@@ -29,22 +29,8 @@ public class Audit implements Serializable {
     private String state;
     private String reference;
 
-    @ManyToMany
-    @JoinTable(
-            name = "audit_process",
-            joinColumns = @JoinColumn(name = "audit_id"),
-            inverseJoinColumns = @JoinColumn(name = "process_id")
-    )
-    private Set<Process> processes = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "audit_checklist",
-            joinColumns = @JoinColumn(name = "audit_id"),
-            inverseJoinColumns = @JoinColumn(name = "checklist_id")
-    )
-    private Set<ProcessChecklist> checklists = new HashSet<>();
-
+    @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AuditProcessChecklist> processChecklist = new HashSet<>();
     @ManyToMany
     @JoinTable(
             name = "audit_team",
@@ -55,38 +41,6 @@ public class Audit implements Serializable {
 
     @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL)
     private List<AuditFile> auditFiles;
-
-    public List<AuditFile> getAuditFiles() {
-        return auditFiles;
-    }
-
-    public void setAuditFiles(List<AuditFile> auditFiles) {
-        this.auditFiles = auditFiles;
-    }
-
-    public Set<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-        this.teams = teams;
-    }
-
-    public Set<Process> getProcesses() {
-        return processes;
-    }
-
-    public void setProcesses(Set<Process> processes) {
-        this.processes = processes;
-    }
-
-    public Set<ProcessChecklist> getChecklists() {
-        return checklists;
-    }
-
-    public void setChecklists(Set<ProcessChecklist> checklists) {
-        this.checklists = checklists;
-    }
 
     public Long getIdAudit() {
         return idAudit;
@@ -142,5 +96,29 @@ public class Audit implements Serializable {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public Set<AuditProcessChecklist> getProcessChecklist() {
+        return processChecklist;
+    }
+
+    public void setProcessChecklist(Set<AuditProcessChecklist> processChecklist) {
+        this.processChecklist = processChecklist;
+    }
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
+    }
+
+    public List<AuditFile> getAuditFiles() {
+        return auditFiles;
+    }
+
+    public void setAuditFiles(List<AuditFile> auditFiles) {
+        this.auditFiles = auditFiles;
     }
 }
