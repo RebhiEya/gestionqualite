@@ -8,6 +8,8 @@ import com.tim.gestionqualite.repository.ProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProcessService {
 
@@ -21,12 +23,14 @@ public class ProcessService {
         processRepository.save(process);
         return process;
     }
-    public Process addProcessWithChecklist(Process process, Long checklistId) {
+    public Process addProcessWithChecklists(Process process, List<Long> checklistIds) {
         Process createdProcess = processRepository.save(process);
-        if (checklistId != null) {
-            ProcessChecklist checklist = processCheklistRepository.findById(checklistId)
-                    .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
-            createdProcess.getProcessChecklist().add(checklist);
+        if (checklistIds != null && !checklistIds.isEmpty()) {
+            List<ProcessChecklist> checklists = processCheklistRepository.findAllById(checklistIds);
+            if (checklists.isEmpty()) {
+                throw new IllegalArgumentException("Checklists not found");
+            }
+            createdProcess.getProcessChecklist().addAll(checklists);
             processRepository.save(createdProcess);
         }
         return createdProcess;

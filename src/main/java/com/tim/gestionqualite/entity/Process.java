@@ -1,6 +1,7 @@
 package com.tim.gestionqualite.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class Process implements Serializable {
     private String recommendation;
     private String weakness;
     private String strength;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AuditProcessChecklist> auditProcessChecklist = new HashSet<>();
 
@@ -75,14 +76,6 @@ public class Process implements Serializable {
 
     public void setStrength(String strength) {
         this.strength = strength;
-    }
-
-    public Set<AuditProcessChecklist> getAuditProcessChecklists() {
-        return auditProcessChecklist;
-    }
-
-    public void setAuditProcessChecklists(Set<AuditProcessChecklist> auditProcessChecklist) {
-        this.auditProcessChecklist = auditProcessChecklist;
     }
 
     public Set<AuditProcessChecklist> getAuditProcessChecklist() {

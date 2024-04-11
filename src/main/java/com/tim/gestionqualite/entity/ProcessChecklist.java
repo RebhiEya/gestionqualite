@@ -1,5 +1,6 @@
 package com.tim.gestionqualite.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,11 @@ public class ProcessChecklist implements Serializable {
     private String state;
     private Boolean conformity;
     private String description;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "processChecklist")
     private Set<AuditProcessChecklist> auditProcessChecklist = new HashSet<>();
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "processChecklist")
     private Set<Process> processes = new HashSet<>();
 
@@ -80,11 +83,11 @@ public class ProcessChecklist implements Serializable {
         this.description = description;
     }
 
-    public Set<AuditProcessChecklist> getAuditProcessChecklists() {
+    public Set<AuditProcessChecklist> getAuditProcessChecklist() {
         return auditProcessChecklist;
     }
 
-    public void setAuditProcessChecklists(Set<AuditProcessChecklist> auditProcessChecklist) {
+    public void setAuditProcessChecklist(Set<AuditProcessChecklist> auditProcessChecklist) {
         this.auditProcessChecklist = auditProcessChecklist;
     }
 

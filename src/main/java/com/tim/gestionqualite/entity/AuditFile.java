@@ -10,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "AuditFile")
+@Table(name = "Auditfile")
 @Entity
 public class AuditFile implements Serializable {
 

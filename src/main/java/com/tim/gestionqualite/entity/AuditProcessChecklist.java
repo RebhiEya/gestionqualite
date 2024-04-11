@@ -3,15 +3,19 @@ package com.tim.gestionqualite.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "audit_process_checklist")
 public class AuditProcessChecklist {
 
+
+    @JsonIgnore
     @EmbeddedId
     private AuditProcessChecklistId id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("auditId")
     private Audit audit;
@@ -19,7 +23,7 @@ public class AuditProcessChecklist {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("processId")
     private Process process;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("checklistId")
     private ProcessChecklist processChecklist;

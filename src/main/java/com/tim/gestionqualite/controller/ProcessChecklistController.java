@@ -15,10 +15,10 @@ public class ProcessChecklistController {
     @Autowired
     ProcessChecklistService processChecklistService;
 
-
-    @PostMapping("/checklist")
+  //pas d'ajout chechklist sans process
+   /* @PostMapping("/add")
     public ResponseEntity<ProcessChecklist> addChecklist(@RequestBody ProcessChecklist checklist) {
      ProcessChecklist createdChecklist =   processChecklistService.addChecklist(checklist);
         return ResponseEntity.ok(createdChecklist);
-    }
+    }*/
 }

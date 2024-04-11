@@ -30,7 +30,7 @@ public class AuditController {
         Optional<Audit> audit = auditService.retrieveAuditById(auditId);
         return ResponseEntity.ok(audit);
     }
-    @PostMapping("add/select-checklist-for-audit/{processId}")
+    @PostMapping("add")
     public ResponseEntity<Audit> addAudit(@RequestBody AuditProcessRequest request) {
         Audit updatedAudit = auditService.addAudit(request.getAudit() , request.getProcessId(), request.getChecklistIds());
         return ResponseEntity.ok(updatedAudit);
