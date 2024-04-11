@@ -5,6 +5,7 @@ import com.tim.gestionqualite.entity.Audit;
 import com.tim.gestionqualite.entity.AuditFile;
 import com.tim.gestionqualite.payloads.AssignRolesAndAddToAuditRequest;
 import com.tim.gestionqualite.payloads.AuditProcessRequest;
+import com.tim.gestionqualite.payloads.AuditResponse;
 import com.tim.gestionqualite.service.AuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,8 @@ public class AuditController {
         return ResponseEntity.ok(audit);
     }
     @PostMapping("add")
-    public ResponseEntity<Audit> addAudit(@RequestBody AuditProcessRequest request) {
-        Audit updatedAudit = auditService.addAudit(request.getAudit() , request.getProcessId(), request.getChecklistIds());
+    public ResponseEntity<AuditResponse> addAudit(@RequestBody AuditProcessRequest request) {
+      AuditResponse updatedAudit = auditService.addAudit(request.getAudit() , request.getProcessId(), request.getChecklistIds());
         return ResponseEntity.ok(updatedAudit);
     }
     @DeleteMapping("delete/{auditId}")
@@ -42,8 +43,8 @@ public class AuditController {
     }
 
     @PutMapping("update/{auditId}")
-    public ResponseEntity<Audit> updateAudit(@PathVariable Long auditId, @RequestBody AuditProcessRequest request) {
-        Audit audit = auditService.updateAudit(auditId, request.getAudit(), request.getProcessId(), request.getChecklistIds());
+    public ResponseEntity<AuditResponse> updateAudit(@PathVariable Long auditId, @RequestBody AuditProcessRequest request) {
+        AuditResponse audit = auditService.updateAudit(auditId, request.getAudit(), request.getProcessId(), request.getChecklistIds());
         return ResponseEntity.ok(audit);
     }
     @PostMapping("/assign-roles-and-add-to-audit")

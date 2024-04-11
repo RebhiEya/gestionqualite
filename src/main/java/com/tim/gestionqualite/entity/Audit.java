@@ -1,5 +1,6 @@
 package com.tim.gestionqualite.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Audit implements Serializable {
     private String state;
     private String reference;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AuditProcessChecklist> processChecklist = new HashSet<>();
     @ManyToMany

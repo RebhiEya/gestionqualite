@@ -3,6 +3,7 @@ package com.tim.gestionqualite.service;
 
 import com.tim.gestionqualite.entity.*;
 import com.tim.gestionqualite.entity.Process;
+import com.tim.gestionqualite.payloads.AuditResponse;
 import com.tim.gestionqualite.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,31 +41,32 @@ public class AuditService {
         return  auditRepository.findById(auditId);
     }
     @Transactional
-    public Audit addAudit(Audit audit, Long processId,Set<Long> checklistIds) {
+    public AuditResponse addAudit(Audit audit, Long processId, Set<Long> checklistIds) {
+        AuditResponse auditResponse = new AuditResponse();
         // Step 1: Find the Process by processId
         Process process = processRepository.findById(processId)
                 .orElseThrow(() -> new IllegalArgumentException("Process with ID " + processId + " not found"));
-
-        // Step 2: Retrieve the ProcessChecklist associated with the Process
-        Set<ProcessChecklist> processChecklists = process.getProcessChecklist();
-
+        auditResponse.setProcess(process);
         // Step 3: Create a Set<AuditProcessChecklist> for each ProcessChecklist
         Set<AuditProcessChecklist> auditProcessChecklists = new HashSet<>();
+        Set<ProcessChecklist> selectedChecklists = new HashSet<>();
         if (checklistIds != null && !checklistIds.isEmpty()) {
             for (Long checklistId : checklistIds) {
 
                 ProcessChecklist checklist = processChecklistRepository.findById(checklistId)
                         .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
 
+                selectedChecklists.add(checklist);
+
                 AuditProcessChecklist auditProcessChecklist = new AuditProcessChecklist();
                 AuditProcessChecklistId auditProcessChecklistId = new AuditProcessChecklistId();
 
-                auditProcessChecklistId.setAuditId(null); // Will be set when saved to DB
+                auditProcessChecklistId.setAuditId(null);
                 auditProcessChecklistId.setProcessId(process.getIdProcess());
                 auditProcessChecklistId.setChecklistId(checklistId);
 
                 auditProcessChecklist.setId(auditProcessChecklistId);
-                auditProcessChecklist.setAudit(audit);  // Use the audit being added
+                auditProcessChecklist.setAudit(audit);
                 auditProcessChecklist.setProcess(process);
                 auditProcessChecklist.setChecklist(checklist);
 
@@ -75,59 +77,83 @@ public class AuditService {
         audit.setProcessChecklist(auditProcessChecklists);
 
         // Step 5: Save the Audit with ProcessChecklist
-        return auditRepository.save(audit);
+         auditRepository.save(audit);
+
+         auditResponse.setAudit(audit);
+        auditResponse.setChecklist(selectedChecklists);
+
+        return auditResponse ;
     }
 
-    public Audit updateAudit(Long auditId, Audit updatedAudit, Long processId, Set<Long> checklistIds) {
+    @Transactional
+    public AuditResponse updateAudit(Long auditId, Audit updatedAudit, Long processId, Set<Long> checklistIds) {
+        // Step 1: Find the existing Audit by auditId
         Audit audit = auditRepository.findById(auditId)
-                .orElseThrow(() -> new IllegalArgumentException("Audit not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Audit with ID " + auditId + " not found"));
 
-        // Mise à jour des attributs de l'audit avec les nouvelles valeurs
+        // Step 2: Update the existing Audit with new details
         audit.setCategory(updatedAudit.getCategory());
         audit.setDesignation(updatedAudit.getDesignation());
-        audit.setStartDate(updatedAudit.getStartDate());
         audit.setEndDate(updatedAudit.getEndDate());
-        audit.setState(updatedAudit.getState());
+        audit.setStartDate(updatedAudit.getStartDate());
         audit.setReference(updatedAudit.getReference());
+        audit.setState(updatedAudit.getState());
+        // Update other fields as needed
 
-        // Mise à jour des processus associés à l'audit
-        if (processId != null) {
-            Process process = processRepository.findById(processId)
-                    .orElseThrow(() -> new IllegalArgumentException("Process not found"));
+        // Step 3: Find the Process by processId
+        Process process = processRepository.findById(processId)
+                .orElseThrow(() -> new IllegalArgumentException("Process with ID " + processId + " not found"));
 
-            // Remove existing associations and create a new one
-            audit.getProcessChecklist().clear(); // Clear existing associations
+        // Step 4: Retrieve the existing ProcessChecklists associated with the Audit
+        Set<AuditProcessChecklist> existingAuditProcessChecklists = audit.getProcessChecklist();
 
-            // Create a new AuditProcessChecklist for the Audit and Process
-            AuditProcessChecklist auditProcessChecklist = new AuditProcessChecklist();
-            auditProcessChecklist.setAudit(audit);
-            auditProcessChecklist.setProcess(process);
-
-            // Save the new AuditProcessChecklist
-            auditProcessChecklistRepository.save(auditProcessChecklist);
-        }
-
-        // Mise à jour des listes de contrôle associées à l'audit
-        if (checklistIds != null) {
-            audit.getProcessChecklist().clear(); // Clear existing associations
-
+        // Step 5: Create a Set<AuditProcessChecklist> for each selected ProcessChecklist
+        Set<AuditProcessChecklist> auditProcessChecklists = new HashSet<>();
+        Set<ProcessChecklist> selectedChecklists = new HashSet<>();
+        if (checklistIds != null && !checklistIds.isEmpty()) {
             for (Long checklistId : checklistIds) {
                 ProcessChecklist checklist = processChecklistRepository.findById(checklistId)
                         .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
 
-                // Create a new AuditProcessChecklist for each selected checklist
-                AuditProcessChecklist checklistAuditProcessChecklist = new AuditProcessChecklist();
-                checklistAuditProcessChecklist.setAudit(audit);
-                // Since there's no direct association with Process, we can omit setting Process
-                checklistAuditProcessChecklist.setChecklist(checklist);
+                selectedChecklists.add(checklist);
 
-                // Save the new AuditProcessChecklist
-                auditProcessChecklistRepository.save(checklistAuditProcessChecklist);
+                // Check if the selected checklist is already associated with the Audit
+                boolean existsInAudit = existingAuditProcessChecklists.stream()
+                        .anyMatch(a -> a.getChecklist().getIdProcessChecklist().equals(checklistId));
+
+                // If not already associated, create a new AuditProcessChecklist
+                if (!existsInAudit) {
+                    AuditProcessChecklist auditProcessChecklist = new AuditProcessChecklist();
+                    AuditProcessChecklistId auditProcessChecklistId = new AuditProcessChecklistId();
+
+                    auditProcessChecklistId.setAuditId(auditId); // Use the provided auditId
+                    auditProcessChecklistId.setProcessId(process.getIdProcess());
+                    auditProcessChecklistId.setChecklistId(checklistId);
+
+                    auditProcessChecklist.setId(auditProcessChecklistId);
+                    auditProcessChecklist.setAudit(audit);
+                    auditProcessChecklist.setProcess(process);
+                    auditProcessChecklist.setChecklist(checklist);
+
+                    auditProcessChecklists.add(auditProcessChecklist);
+                }
             }
         }
 
-        // Enregistrement de l'audit mis à jour dans la base de données
-        return auditRepository.save(audit);
+        // Step 6: Set the updated AuditProcessChecklists in the Audit
+        audit.getProcessChecklist().clear(); // Clear existing associations
+        audit.getProcessChecklist().addAll(auditProcessChecklists);
+
+        // Step 7: Save the updated Audit with ProcessChecklists
+        auditRepository.save(audit);
+
+        // Step 8: Set the response fields
+        AuditResponse auditResponse = new AuditResponse();
+        auditResponse.setAudit(audit);
+        auditResponse.setProcess(process);
+        auditResponse.setChecklist(selectedChecklists);
+
+        return auditResponse;
     }
 
     public void deleteAudit(Long auditId) {
