@@ -1,17 +1,16 @@
 package com.tim.gestionqualite.payloads;
 
-import com.tim.gestionqualite.entity.ControlCheckList;
-import com.tim.gestionqualite.entity.ControlDefect;
 import com.tim.gestionqualite.entity.QualityControl;
 
-import java.util.List;
+import java.util.Set;
 
 public class QualityControlRequest {
 
-
     private QualityControl qualityControl;
 
-    // Getters and setters for qualityControl
+    private Long produitId;
+
+    private Set<Long> checklistIds;
 
     public QualityControl getQualityControl() {
         return qualityControl;
@@ -21,19 +20,19 @@ public class QualityControlRequest {
         this.qualityControl = qualityControl;
     }
 
-    public List<ControlCheckList> getControlCheckLists() {
-        return qualityControl.getControlCheckLists();
+    public Long getProduitId() {
+        return produitId;
     }
 
-    public void setControlCheckLists(List<ControlCheckList> controlCheckLists) {
-        qualityControl.setControlCheckLists(controlCheckLists);
+    public void setProduitId(Long produitId) {
+        this.produitId = produitId;
     }
 
-    public List<ControlDefect> getControlDefect() {
-        return qualityControl.getControlDefect();
+    public Set<Long> getChecklistIds() {
+        return checklistIds;
     }
 
-    public void setControlDefect(List<ControlDefect> controlDefect) {
-        qualityControl.setControlDefect(controlDefect);
+    public void setChecklistIds(Set<Long> checklistIds) {
+        this.checklistIds = checklistIds;
     }
 }

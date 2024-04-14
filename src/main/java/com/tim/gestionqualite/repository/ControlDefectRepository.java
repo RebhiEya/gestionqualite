@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ControlDefectRepository extends JpaRepository<ControlDefect, Long> {
 
-    List<ControlDefect> findByQualityControlIdQualityControl(Long qualityControlId);
+
 }

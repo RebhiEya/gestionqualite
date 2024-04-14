@@ -2,19 +2,21 @@ package com.tim.gestionqualite.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "ControlCheckList")
+@Table(name = "Controlchecklist")
 @Entity
-public class ControlCheckList implements Serializable  {
+public class ControlChecklist implements Serializable  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idControlCheck")
@@ -31,8 +33,12 @@ public class ControlCheckList implements Serializable  {
     private String description;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "controlCheckLists")
-    private List<QualityControl> qualityControls = new ArrayList<>();
+    @OneToMany(mappedBy = "produitChecklist")
+    private Set<ProduitControlChecklist> produitControlChecklist = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "produitChecklist")
+    private Set<Produit> produits  = new HashSet<>();
 
     public Long getIdControlCheckList() {
         return idControlCheckList;
@@ -98,11 +104,19 @@ public class ControlCheckList implements Serializable  {
         this.description = description;
     }
 
-    public List<QualityControl> getQualityControls() {
-        return qualityControls;
+    public Set<ProduitControlChecklist> getProduitControlChecklist() {
+        return produitControlChecklist;
     }
 
-    public void setQualityControls(List<QualityControl> qualityControls) {
-        this.qualityControls = qualityControls;
+    public void setProduitControlChecklist(Set<ProduitControlChecklist> produitControlChecklist) {
+        this.produitControlChecklist = produitControlChecklist;
+    }
+
+    public Set<Produit> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(Set<Produit> produits) {
+        this.produits = produits;
     }
 }

@@ -1,17 +1,19 @@
 package com.tim.gestionqualite.service;
 
-import com.tim.gestionqualite.entity.ControlCheckList;
-import com.tim.gestionqualite.entity.ControlDefect;
-import com.tim.gestionqualite.entity.QualityControl;
+import com.tim.gestionqualite.entity.*;
+import com.tim.gestionqualite.payloads.ControlResponse;
 import com.tim.gestionqualite.repository.ControlCheckListRepository;
 import com.tim.gestionqualite.repository.ControlDefectRepository;
+import com.tim.gestionqualite.repository.ProduitRepository;
 import com.tim.gestionqualite.repository.QualityControlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class QualiyControlService {
@@ -19,6 +21,9 @@ public class QualiyControlService {
     QualityControlRepository qualityControlRepository;
     @Autowired
     ControlCheckListRepository controlCheckListRepository;
+
+    @Autowired
+    ProduitRepository produitRepository;
     @Autowired
     ControlDefectRepository controlDefectRepository;
 
@@ -26,128 +31,137 @@ public class QualiyControlService {
         return (List<QualityControl>) qualityControlRepository.findAll();
     }
 
-    public QualityControl addQualityControl(QualityControl q) {
-        return qualityControlRepository.save(q);
-    }
-
-
     @Transactional
-    public QualityControl addQualityControl(QualityControl qualityControl,
-                                            List<ControlCheckList> controlCheckLists,
-                                            List<ControlDefect> controlDefects) {
-        // Save the QualityControl entity to generate an ID
-        QualityControl savedQualityControl = qualityControlRepository.save(qualityControl);
-
-        // Add ControlCheckList entities to QualityControl
-        for (ControlCheckList controlCheckList : controlCheckLists) {
-            controlCheckList.getQualityControls().add(savedQualityControl);
-        }
-
+    public ControlResponse addQualityControl(QualityControl qualityControl, Long produitId, Set<Long> checklistIds) {
+        ControlResponse controlResponse = new ControlResponse();
+        // Step 1: Find the Process by processId
+        Produit produit = produitRepository.findById(produitId)
+                .orElseThrow(() -> new IllegalArgumentException("Produit with ID " + produitId + " not found"));
+        controlResponse.setProduit(produit);
+        // Step 3: Create a Set<AuditProcessChecklist> for each ProcessChecklist
+        Set<ProduitControlChecklist> produitControlChecklists = new HashSet<>();
+        Set<ControlChecklist> selectedChecklists = new HashSet<>();
         // Add ControlDefect entities to QualityControl
-        for (ControlDefect controlDefect : controlDefects) {
-            controlDefect.getQualityControls().add(savedQualityControl);
+        for (ControlDefect controlDefect : qualityControl.getControlDefect()) {
+            controlDefect.getQualityControls().add(qualityControl);
         }
+        if (checklistIds != null && !checklistIds.isEmpty()) {
+            for (Long checklistId : checklistIds) {
 
-        return savedQualityControl;
-    }
+                ControlChecklist checklist = controlCheckListRepository.findById(checklistId)
+                        .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
 
-    @Transactional
-    public QualityControl updateQualityControl(Long qualityControlId, QualityControl updatedQualityControl,
-                                               List<ControlCheckList> updatedControlCheckLists,
-                                               List<ControlDefect> updatedControlDefects) {
-        // Find the existing QualityControl entity
-        QualityControl existingQualityControl = qualityControlRepository.findById(qualityControlId)
-                .orElseThrow(() -> new RuntimeException("QualityControl not found with id: " + qualityControlId));
+                selectedChecklists.add(checklist);
 
-        // Update fields of the existing QualityControl with the updatedQualityControl
-        existingQualityControl.setReference(updatedQualityControl.getReference());
-        existingQualityControl.setInternalReference(updatedQualityControl.getInternalReference());
-        existingQualityControl.setDate(updatedQualityControl.getDate());
-        existingQualityControl.setState(updatedQualityControl.getState());
-        existingQualityControl.setDescription(updatedQualityControl.getDescription());
+                ProduitControlChecklist produitControlChecklist = new ProduitControlChecklist();
+                ProduitControlChecklistId produitControlChecklistId = new ProduitControlChecklistId();
 
-        // Update the association with ControlCheckList
-        existingQualityControl.getControlCheckLists().clear();
-        for (ControlCheckList updatedControlCheckList : updatedControlCheckLists) {
-            updatedControlCheckList.getQualityControls().add(existingQualityControl);
-            existingQualityControl.getControlCheckLists().add(updatedControlCheckList);
-        }
+                produitControlChecklistId.setControlId(null);
+                produitControlChecklistId.setProduitId(produit.getIdProduit());
+                produitControlChecklistId.setChecklistId(checklistId);
 
-        // Update the association with ControlDefect
-        existingQualityControl.getControlDefect().clear();
-        for (ControlDefect updatedControlDefect : updatedControlDefects) {
-            updatedControlDefect.getQualityControls().add(existingQualityControl);
-            existingQualityControl.getControlDefect().add(updatedControlDefect);
-        }
+                produitControlChecklist.setId(produitControlChecklistId);
+                produitControlChecklist.setControl(qualityControl);
+                produitControlChecklist.setProduit(produit);
+                produitControlChecklist.setProduitChecklist(checklist);
 
-        // Save and return the updated QualityControl entity
-        return qualityControlRepository.save(existingQualityControl);
-    }
-
-    @Transactional
-    public void deleteQualityControl(Long qualityControlId) {
-        // Find the QualityControl entity
-        Optional<QualityControl> qualityControlOptional = qualityControlRepository.findById(qualityControlId);
-        if (qualityControlOptional.isPresent()) {
-            QualityControl qualityControl = qualityControlOptional.get();
-
-            // Clear associations with ControlCheckList
-            for (ControlCheckList controlCheckList : qualityControl.getControlCheckLists()) {
-                controlCheckList.getQualityControls().remove(qualityControl);
+                produitControlChecklists.add(produitControlChecklist);
             }
-            qualityControl.getControlCheckLists().clear();
-
-            // Clear associations with ControlDefect
-            for (ControlDefect controlDefect : qualityControl.getControlDefect()) {
-                controlDefect.getQualityControls().remove(qualityControl);
-            }
-            qualityControl.getControlDefect().clear();
-
-            // Delete the QualityControl entity
-            qualityControlRepository.delete(qualityControl);
-        } else {
-            throw new RuntimeException("QualityControl not found with id: " + qualityControlId);
         }
+        // Step 4: Set the AuditProcessChecklist in the Audit
+        qualityControl.setControlChecklist(produitControlChecklists);
+
+        // Step 5: Save the Audit with ProcessChecklist
+        qualityControlRepository.save(qualityControl);
+
+        controlResponse.setQualityControl(qualityControl);
+        controlResponse.setChecklist(selectedChecklists);
+
+        return controlResponse;
     }
 
     @Transactional
-    public void deleteControlCheckListFromQualityControl(Long qualityControlId, Long controlCheckListId) {
-        // Find the QualityControl entity
-        QualityControl qualityControl = qualityControlRepository.findById(qualityControlId)
-                .orElseThrow(() -> new RuntimeException("QualityControl not found with id: " + qualityControlId));
+    public ControlResponse updateQualityControl(Long controlId, QualityControl updatedControl, Long produitId, Set<Long> checklistIds) {
+        // Step 1: Find the existing Audit by auditId
+        QualityControl qualityControl = qualityControlRepository.findById(controlId)
+                .orElseThrow(() -> new IllegalArgumentException("Audit with ID " + controlId + " not found"));
 
-        // Find the ControlCheckList entity
-        ControlCheckList controlCheckList = controlCheckListRepository.findById(controlCheckListId)
-                .orElseThrow(() -> new RuntimeException("ControlCheckList not found with id: " + controlCheckListId));
+        // Step 2: Update the existing Audit with new details
+        qualityControl.setControlDefect(updatedControl.getControlDefect());
+        qualityControl.setReference(updatedControl.getReference());
+        qualityControl.setDate(updatedControl.getDate());
+        qualityControl.setInternalReference(updatedControl.getInternalReference());
+        qualityControl.setDescription(updatedControl.getDescription());
+        qualityControl.setState(updatedControl.getState());
+        // Update other fields as needed
 
-        // Remove the ControlCheckList from the QualityControl
-        qualityControl.getControlCheckLists().remove(controlCheckList);
+        // Step 3: Find the Process by processId
+        Produit produit = produitRepository.findById(produitId)
+                .orElseThrow(() -> new IllegalArgumentException("Produit with ID " + produitId + " not found"));
 
-        // Remove the QualityControl from the ControlCheckList
-        controlCheckList.getQualityControls().remove(qualityControl);
+        // Step 4: Retrieve the existing ProcessChecklists associated with the Audit
+        Set<ProduitControlChecklist> existingProduitControlChecklists = qualityControl.getControlChecklist();
 
-        // Save the updated entities
+        // Step 5: Create a Set<AuditProcessChecklist> for each selected ProcessChecklist
+        Set<ProduitControlChecklist> produitControlChecklists = new HashSet<>();
+        Set<ControlChecklist> selectedChecklists = new HashSet<>();
+        if (checklistIds != null && !checklistIds.isEmpty()) {
+            for (Long checklistId : checklistIds) {
+                ControlChecklist checklist = controlCheckListRepository.findById(checklistId)
+                        .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
+
+                selectedChecklists.add(checklist);
+
+                // Check if the selected checklist is already associated with the Audit
+                boolean existsInControl = existingProduitControlChecklists.stream()
+                        .anyMatch(a -> a.getProduitChecklist().getIdControlCheckList().equals(checklistId));
+
+                // If not already associated, create a new AuditProcessChecklist
+                if (!existsInControl) {
+                    ProduitControlChecklist produitControlChecklist = new ProduitControlChecklist();
+                    ProduitControlChecklistId produitControlChecklistId = new ProduitControlChecklistId();
+
+                    produitControlChecklistId.setControlId(controlId); // Use the provided auditId
+                    produitControlChecklistId.setProduitId(produit.getIdProduit());
+                    produitControlChecklistId.setChecklistId(checklistId);
+
+                    produitControlChecklist.setId(produitControlChecklistId);
+                    produitControlChecklist.setControl(qualityControl);
+                    produitControlChecklist.setProduit(produit);
+                    produitControlChecklist.setProduitChecklist(checklist);
+
+                    produitControlChecklists.add(produitControlChecklist);
+                }
+            }
+        }
+
+        // Step 6: Set the updated AuditProcessChecklists in the Audit
+        qualityControl.getControlChecklist().clear(); // Clear existing associations
+        qualityControl.getControlChecklist().addAll(produitControlChecklists);
+
+        // Step 7: Save the updated Audit with ProcessChecklists
         qualityControlRepository.save(qualityControl);
-        controlCheckListRepository.save(controlCheckList);
+
+        // Step 8: Set the response fields
+        ControlResponse controlResponse = new ControlResponse();
+        controlResponse.setQualityControl(qualityControl);
+        controlResponse.setProduit(produit);
+        controlResponse.setChecklist(selectedChecklists);
+
+        return controlResponse;
     }
-    @Transactional
-    public void deleteDefectFromQualityControl(Long qualityControlId, Long controlDefectId) {
-        // Find the QualityControl entity
-        QualityControl qualityControl = qualityControlRepository.findById(qualityControlId)
-                .orElseThrow(() -> new RuntimeException("QualityControl not found with id: " + qualityControlId));
 
-        // Find the ControlCheckList entity
-        ControlDefect controlDefect = controlDefectRepository.findById(controlDefectId)
-                .orElseThrow(() -> new RuntimeException("ControlDefect not found with id: " + controlDefectId));
+    public Optional<QualityControl> retrieveAuditById(Long auditId) {
+        return  qualityControlRepository.findById(auditId);
 
-        // Remove the ControlCheckList from the QualityControl
-        qualityControl.getControlCheckLists().remove(controlDefect);
+    }
+    public void deleteControl(Long controlId) {
+        // Vérifiez d'abord si l'audit existe
+        if (!qualityControlRepository.existsById(controlId)) {
+            throw new IllegalArgumentException("Audit not found");
+        }
 
-        // Remove the QualityControl from the ControlCheckList
-        controlDefect.getQualityControls().remove(qualityControl);
-
-        // Save the updated entities
-        qualityControlRepository.save(qualityControl);
-        controlDefectRepository.save(controlDefect);
+        // Supprimez l'audit de la base de données
+        qualityControlRepository.deleteById(controlId);
     }
 }

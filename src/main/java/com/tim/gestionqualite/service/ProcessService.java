@@ -35,7 +35,7 @@ public class ProcessService {
         }
         return createdProcess;
     }
-    public Process addAndAssignChecklistToProcess(Long processId , ProcessChecklist processChecklist) {
+    public Process addChecklistAndAssignToProcess(Long processId , ProcessChecklist processChecklist) {
         processChecklist = processCheklistRepository.save(processChecklist);
         Process process = processRepository.findById(processId).orElseThrow(() -> new IllegalArgumentException("Process not found"));
         process.getProcessChecklist().add(processChecklist);

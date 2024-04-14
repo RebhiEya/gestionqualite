@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/process")
@@ -27,7 +25,7 @@ public class ProcessController {
     }
     @PostMapping("/assign-checklist-to-process/{processId}")
     public ResponseEntity<Process> assignChecklistToProcess(@PathVariable Long processId, @RequestBody ProcessChecklist processChecklist) {
-        Process createdProcess = processService.addAndAssignChecklistToProcess(processId, processChecklist);
+        Process createdProcess = processService.addChecklistAndAssignToProcess(processId, processChecklist);
         return ResponseEntity.ok(createdProcess);
     }
 

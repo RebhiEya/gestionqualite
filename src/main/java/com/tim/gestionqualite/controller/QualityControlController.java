@@ -1,12 +1,18 @@
 package com.tim.gestionqualite.controller;
 
+import com.tim.gestionqualite.entity.Audit;
 import com.tim.gestionqualite.entity.QualityControl;
+import com.tim.gestionqualite.payloads.AuditProcessRequest;
+import com.tim.gestionqualite.payloads.AuditResponse;
+import com.tim.gestionqualite.payloads.ControlResponse;
 import com.tim.gestionqualite.payloads.QualityControlRequest;
 import com.tim.gestionqualite.service.QualiyControlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -19,42 +25,34 @@ public class QualityControlController {
     public QualityControlController(QualiyControlService qualiyControlService) {
         this.qualiyControlService = qualiyControlService;
     }
-
+    //http://localhost:8089/qualiyControl/retrieve-all-qualiyControl
     @GetMapping("/retrieve-all-qualiyControl")
     @ResponseBody
     public List<QualityControl> getQualiyControlService() {
         List<QualityControl> listQualiyControl = qualiyControlService.retrieveAllQualityControls();
         return listQualiyControl;
     }
+    //http://localhost:8089/qualiyControl/get/{controlId}
+    @GetMapping("get/{controlId}")
+    public ResponseEntity<Optional<QualityControl>> getQualityControlById(@PathVariable Long auditId) {
+        Optional<QualityControl> qualityControl = qualiyControlService.retrieveAuditById(auditId);
+        return ResponseEntity.ok(qualityControl);
+    }
+    @PostMapping("add")
+    public ResponseEntity<ControlResponse> addQualityControl(@RequestBody QualityControlRequest request) {
+        ControlResponse addedControlResponse = qualiyControlService.addQualityControl(request.getQualityControl() , request.getProduitId(), request.getChecklistIds());
+        return ResponseEntity.ok(addedControlResponse);
+    }
+    @DeleteMapping("delete/{controlId}")
+    public ResponseEntity<String> deleteControl(@PathVariable Long controlId) {
+        qualiyControlService.deleteControl(controlId);
+        return ResponseEntity.ok("control deleted successfully");
+    }
 
+    @PutMapping("update/{controlId}")
+    public ResponseEntity<ControlResponse> updateControlResponse(@PathVariable Long controlId, @RequestBody QualityControlRequest request) {
+        ControlResponse control = qualiyControlService.updateQualityControl(controlId, request.getQualityControl(), request.getProduitId(), request.getChecklistIds());
+        return ResponseEntity.ok(control);
+    }
 
-    @PostMapping("/add-qualiyControl")
-    @ResponseBody
-    public QualityControl addQualityControlWithChecklists(@RequestBody QualityControlRequest request) {
-        QualityControl qualityControl = qualiyControlService.addQualityControl(request.getQualityControl() , request.getControlCheckLists(),request.getControlDefect());
-        return qualityControl;
-    }
-    @PutMapping("/update-qualiyControl/{id}")
-    public QualityControl updateQualityControlWithChecklistsAndDefects(@PathVariable Long qualityControlId, @RequestBody QualityControlRequest request) {
-            return qualiyControlService.updateQualityControl(
-                    qualityControlId,
-                    request.getQualityControl(),
-                    request.getControlCheckLists(),
-                    request.getControlDefect()
-            );
-    }
-    @DeleteMapping("/delete-qualiyControl/{id}")
-    public void deleteQualityControl(@PathVariable Long id) {
-        qualiyControlService.deleteQualityControl(id);
-    }
-    @DeleteMapping("/{qualityControlId}/control-checklist/{controlCheckListId}")
-    public void deleteControlCheckListFromQualityControl(@PathVariable Long qualityControlId,
-                                                         @PathVariable Long controlCheckListId) {
-        qualiyControlService.deleteControlCheckListFromQualityControl(qualityControlId, controlCheckListId);
-    }
-    @DeleteMapping("/{qualityControlId}/control-checklist/{controlCheckListId}")
-    public void deleteControlDefectFromQualityControl(@PathVariable Long qualityControlId,
-                                                         @PathVariable Long controlDefectId) {
-        qualiyControlService.deleteDefectFromQualityControl(qualityControlId, controlDefectId);
-    }
 }

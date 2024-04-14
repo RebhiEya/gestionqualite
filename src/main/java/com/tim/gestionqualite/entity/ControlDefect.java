@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "ControlDefect")
+@Table(name = "Controldefect")
 @Entity
 public class ControlDefect implements Serializable {
     @Id

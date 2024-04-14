@@ -28,6 +28,9 @@ public class Team implements Serializable {
     @ManyToMany(mappedBy = "teams")
     private Set<Audit> audits = new HashSet<>();
 
+    @ManyToMany(mappedBy = "teams")
+    private Set<QualityControl> qualityControls = new HashSet<>();
+
     public Long getIdTeam() {
         return idTeam;
     }

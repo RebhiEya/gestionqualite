@@ -14,7 +14,5 @@ public class ControlDefectService {
     @Autowired
     ControlDefectRepository controlDefectRepository;
 
-    public List<ControlDefect> retrieveAllControlCheckListByIdControl(Long idQualityControl) {
-        return (List<ControlDefect>) controlDefectRepository.findByQualityControlIdQualityControl(idQualityControl);
-    }
+
 }

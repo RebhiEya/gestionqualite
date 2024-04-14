@@ -1,19 +1,18 @@
 package com.tim.gestionqualite.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import java.util.*;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "QualityControl")
+@Table(name = "Qualitycontrol")
 @Entity
 public class QualityControl implements Serializable {
     @Id
@@ -25,22 +24,25 @@ public class QualityControl implements Serializable {
     private Date date;
     private String state;
     private String description;
-    @ManyToMany
-    @JoinTable(
-            name = "quality_control_checklist",
-            joinColumns = @JoinColumn(name = "quality_control_id"),
-            inverseJoinColumns = @JoinColumn(name = "control_checklist_id")
-    )
-    private List<ControlCheckList> controlCheckLists = new ArrayList<>();
+    @OneToMany(mappedBy = "control", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProduitControlChecklist> controlChecklist = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
-            name = "quality_control_defect",
+            name = "qualitycontrol_defect",
             joinColumns = @JoinColumn(name = "quality_control_id"),
             inverseJoinColumns = @JoinColumn(name = "control_defect_id")
     )
     private List<ControlDefect> controlDefect = new ArrayList<>();
 
+
+    @ManyToMany
+    @JoinTable(
+            name = "control_team",
+            joinColumns = @JoinColumn(name = "control_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
+    private Set<Team> teams = new HashSet<>();
     public Long getIdQualityControl() {
         return idQualityControl;
     }
@@ -89,12 +91,12 @@ public class QualityControl implements Serializable {
         this.description = description;
     }
 
-    public List<ControlCheckList> getControlCheckLists() {
-        return controlCheckLists;
+    public Set<ProduitControlChecklist> getControlChecklist() {
+        return controlChecklist;
     }
 
-    public void setControlCheckLists(List<ControlCheckList> controlCheckLists) {
-        this.controlCheckLists = controlCheckLists;
+    public void setControlChecklist(Set<ProduitControlChecklist> controlChecklist) {
+        this.controlChecklist = controlChecklist;
     }
 
     public List<ControlDefect> getControlDefect() {
@@ -103,5 +105,14 @@ public class QualityControl implements Serializable {
 
     public void setControlDefect(List<ControlDefect> controlDefect) {
         this.controlDefect = controlDefect;
+    }
+
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
     }
 }
