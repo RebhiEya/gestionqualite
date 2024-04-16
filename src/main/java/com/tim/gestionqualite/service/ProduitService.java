@@ -28,7 +28,6 @@ public class ProduitService {
         if (!produitRepository.existsById(produitId)) {
             throw new IllegalArgumentException("Produit not found");
         }
-
         // Supprimez le produit de la base de données
         produitRepository.deleteById(produitId);
         // renvoyer la liste des produits

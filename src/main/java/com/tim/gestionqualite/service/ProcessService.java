@@ -3,6 +3,7 @@ package com.tim.gestionqualite.service;
 
 import com.tim.gestionqualite.entity.Process;
 import com.tim.gestionqualite.entity.ProcessChecklist;
+import com.tim.gestionqualite.entity.Produit;
 import com.tim.gestionqualite.repository.ProcessChecklistRepository;
 import com.tim.gestionqualite.repository.ProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class ProcessService {
     @Autowired
     ProcessChecklistRepository processCheklistRepository;
 
+
+    public List<Process> retrieveAllProcesses() {
+        return processRepository.findAll();
+    }
     public Process addProcessWithoutChecklist(Process process) {
         processRepository.save(process);
         return process;
@@ -41,5 +46,31 @@ public class ProcessService {
         process.getProcessChecklist().add(processChecklist);
         processRepository.save(process);
         return process;
+    }
+
+    public List<Process> deleteProsses(Long prossesId) {
+        // Vérifiez d'abord si le produit existe
+        if (!processRepository.existsById(prossesId)) {
+            throw new IllegalArgumentException("Produit not found");
+        }
+
+        // Supprimez le produit de la base de données
+        processRepository.deleteById(prossesId);
+        // renvoyer la liste des produits
+        return processRepository.findAll();
+    }
+
+
+    public Process updateProcess(Long idProcess, Process updatedProcess) {
+        Process existingProcess = processRepository.findById(idProcess)
+                .orElseThrow(() -> new RuntimeException("Process non trouvé avec l'ID : " + idProcess));
+
+        // Mettre à jour les champs que vous souhaitez
+        existingProcess.setNom(updatedProcess.getNom());
+        existingProcess.setRecommendation(updatedProcess.getRecommendation());
+        existingProcess.setWeakness(updatedProcess.getWeakness());
+        existingProcess.setStrength(updatedProcess.getStrength());
+
+        return processRepository.save(existingProcess);
     }
 }
