@@ -9,7 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "Team")
+@Table(name = "Role")
 @Entity
 @Getter
 @Setter
@@ -21,4 +21,8 @@ public class Role implements Serializable {
     private int id;
     @Enumerated(EnumType.STRING)
     private RoleName role;
+
+    public RoleName getRole() {
+        return role;
+    }
 }

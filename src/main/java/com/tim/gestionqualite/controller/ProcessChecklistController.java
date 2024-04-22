@@ -16,9 +16,9 @@ public class ProcessChecklistController {
     ProcessChecklistService processChecklistService;
 
   //pas d'ajout chechklist sans process
-   /* @PostMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<ProcessChecklist> addChecklist(@RequestBody ProcessChecklist checklist) {
      ProcessChecklist createdChecklist =   processChecklistService.addChecklist(checklist);
         return ResponseEntity.ok(createdChecklist);
-    }*/
+    }
 }

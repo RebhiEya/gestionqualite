@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/process")
+@RequestMapping("/admin/process")
 public class ProcessController {
 
     @Autowired
@@ -50,4 +50,10 @@ public class ProcessController {
         Process createdProcess = processService.addProcessWithChecklists(request.getProcess(), request.getChecklistIds());
         return ResponseEntity.ok(createdProcess);
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Process> updateProcess(@PathVariable Long id, @RequestBody Process updatedProcess) {
+        Process updated = processService.updateProcess(id, updatedProcess);
+        return ResponseEntity.ok(updated);
+    }
+
 }
