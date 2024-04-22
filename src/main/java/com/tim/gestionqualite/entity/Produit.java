@@ -1,6 +1,7 @@
 package com.tim.gestionqualite.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Produit {
     private String reference;
     private String Famille;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProduitControlChecklist> produitControlChecklist = new HashSet<>();
 
