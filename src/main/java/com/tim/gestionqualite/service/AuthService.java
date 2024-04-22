@@ -24,6 +24,7 @@ public class AuthService {
         ReqRes response = new ReqRes();
 
         try {
+
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(),signinRequest.getPassword()));
             var user = ourUserRepo.findByEmail(signinRequest.getEmail()).orElseThrow();
             System.out.println("USER IS: "+ user);
