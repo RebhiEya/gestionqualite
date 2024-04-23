@@ -25,7 +25,6 @@ public class SecurityConfig {
 
     // les urls sans authorisations
     private static final String[] WHITE_LIST_URL = {"/auth/**", "/public/**" , "/produit/**","/process/**" , "/user/**"};
-
     @Autowired
     private OurUserDetailsService ourUserDetailsService;
     @Autowired
