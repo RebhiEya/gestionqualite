@@ -22,24 +22,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+
+    // les urls sans authorisations
+    private static final String[] WHITE_LIST_URL = {"/auth/**", "/public/**" , "/produit/**","/process/**" , "/user/**"};
+
     @Autowired
     private OurUserDetailsService ourUserDetailsService;
     @Autowired
     private JwtAuthFilter jwtAuthFIlter;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/public/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/employe/**").hasAnyAuthority("EMPLOYEE")
-                        .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers(WHITE_LIST_URL)
+                                .permitAll()
+
+                        .anyRequest()
+                                .authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthFIlter, UsernamePasswordAuthenticationFilter.class
                 );
-        return httpSecurity.build();
+        return http.build();
 
     }
 

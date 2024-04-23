@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/admin/process")
+@RequestMapping("/process")
 public class ProcessController {
 
     @Autowired
