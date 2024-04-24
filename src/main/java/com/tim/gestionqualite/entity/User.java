@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "\"User\"")
+@Table(name = "/User")
 @Entity
 public class User implements Serializable, UserDetails {
 
