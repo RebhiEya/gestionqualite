@@ -20,7 +20,8 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    public List<User> getAllUsers() {
+
+    public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
@@ -32,23 +33,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+
+    public List<User> deleteUser(Long userid) {
+        if (!userRepository.existsById(userid)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        userRepository.deleteById(userid);
+        return userRepository.findAll();
     }
 
-    public User createUser(User user) {
 
-
-        //if (userRepository.findByEmail(user.getEmail()) != null) {
-
-          //  System.out.println("Email already exists");
-         //   return null;
-     //   } else {
-            // Email doesn't exist, proceed with encoding the password and saving the user
-            System.out.println(user.getPassword());
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
-            return userRepository.save(user);
-       // }
-}
+    public User createdUser(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        return userRepository.save(user);
+    }
 }

@@ -4,7 +4,6 @@ import com.tim.gestionqualite.entity.User;
 import com.tim.gestionqualite.repository.UserRepository;
 import com.tim.gestionqualite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,25 +16,22 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-private UserRepository userRepository;
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    private UserRepository userRepository;
+
+    @GetMapping("getAll")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> ListUser = userService.getAllUser();
+        return ResponseEntity.ok(ListUser);
     }
 
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id).orElse(null);
-    }
+
     @PostMapping("/add")
-    public ResponseEntity<String> addUser(@RequestBody User user) {
-        User existingUser = userService.createUser(user);
-        if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-        }
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        User existingUser = userService.createdUser(user);
+        return ResponseEntity.ok(existingUser);
+
     }
+
 
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User user) {
@@ -43,8 +39,12 @@ private UserRepository userRepository;
         return userService.saveUser(user);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+
+    @DeleteMapping("delete/{userid}")
+    public ResponseEntity<List<User>> deleteUser(@PathVariable Long userid) {
+        List<User> ListUser = userService.deleteUser(userid);
+        return ResponseEntity.ok(ListUser);
     }
+
+
 }
