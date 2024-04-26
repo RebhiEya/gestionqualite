@@ -24,11 +24,8 @@ public class ControlChecklist implements Serializable  {
     private String category;
     private String criteria;
     private String operation;
-
     private Boolean conformity;
-
     private String defects;
-
     private Number measures;
     private String description;
 

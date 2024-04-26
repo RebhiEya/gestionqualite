@@ -22,6 +22,4 @@ public class ControlCheckListController {
         List<ControlChecklist> checklists = controlCheckListService.retrieveByProduit(idProduit);
         return ResponseEntity.ok(checklists);
     }
-
-
 }

@@ -25,6 +25,8 @@ public class ProduitController {
         List<Produit> ListProduit = produitService.retrieveAllProduits();
         return ResponseEntity.ok(ListProduit);
     }
+
+
     @DeleteMapping("delete/{produitId}")
     public ResponseEntity<List<Produit>> deleteProduit(@PathVariable Long produitId) {
         List<Produit> ListProduit =  produitService.deleteProduit(produitId);

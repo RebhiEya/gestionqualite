@@ -33,6 +33,8 @@ public class ProduitService {
         // renvoyer la liste des produits
         return produitRepository.findAll();
     }
+
+
     public Optional<Produit> retrieveProduitById(Long auditId) {
         return  produitRepository.findById(auditId);
     }

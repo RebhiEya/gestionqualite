@@ -1,5 +1,6 @@
 package com.tim.gestionqualite.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,14 +10,15 @@ public class ProduitControlChecklist {
     @EmbeddedId
     private ProduitControlChecklistId id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("controlId")
     private QualityControl control;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("produitId")
     private Produit produit;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("checklistId")
     private ControlChecklist produitChecklist;
