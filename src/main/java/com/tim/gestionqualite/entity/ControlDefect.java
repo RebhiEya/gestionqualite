@@ -11,7 +11,6 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Controldefect")
 @Entity
 public class ControlDefect implements Serializable {

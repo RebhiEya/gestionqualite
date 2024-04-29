@@ -11,7 +11,6 @@ import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Qualitycontrol")
 @Entity
 public class QualityControl implements Serializable {
@@ -28,6 +27,7 @@ public class QualityControl implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToMany(mappedBy = "control", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProduitControlChecklist> controlChecklist = new HashSet<>();
 

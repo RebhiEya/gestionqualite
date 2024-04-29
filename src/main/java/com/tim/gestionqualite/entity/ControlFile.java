@@ -6,7 +6,6 @@ import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Controlfile")
 @Entity
 @Getter

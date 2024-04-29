@@ -9,7 +9,10 @@ import com.tim.gestionqualite.repository.ProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProcessService {
@@ -24,10 +27,12 @@ public class ProcessService {
     public List<Process> retrieveAllProcesses() {
         return processRepository.findAll();
     }
+
     public Process addProcessWithoutChecklist(Process process) {
         processRepository.save(process);
         return process;
     }
+
     public Process addProcessWithChecklists(Process process, List<Long> checklistIds) {
         Process createdProcess = processRepository.save(process);
         if (checklistIds != null && !checklistIds.isEmpty()) {
@@ -40,10 +45,12 @@ public class ProcessService {
         }
         return createdProcess;
     }
-    public Process addChecklistAndAssignToProcess(Long processId , ProcessChecklist processChecklist) {
+
+    public Process addChecklistAndAssignToProcess(Long processId, ProcessChecklist processChecklist) {
         processChecklist = processCheklistRepository.save(processChecklist);
         Process process = processRepository.findById(processId).orElseThrow(() -> new IllegalArgumentException("Process not found"));
         process.getProcessChecklist().add(processChecklist);
+        System.out.println( process.getProcessChecklist());
         processRepository.save(process);
         return process;
     }
@@ -73,4 +80,16 @@ public class ProcessService {
 
         return processRepository.save(existingProcess);
     }
+
+    public List<ProcessChecklist > getchecklist(Long prossesId) {
+
+        Optional<Process> optionalProcess = processRepository.findById(prossesId);
+        Process process = optionalProcess.orElseThrow(() -> new RuntimeException("Process not found with ID: " + prossesId));
+        return new ArrayList<>(process.getProcessChecklist());
+
+    }
+    public Optional<Process> retrieveProcessById(Long processId) {
+        return  processRepository.findById(processId);
+    }
+
 }

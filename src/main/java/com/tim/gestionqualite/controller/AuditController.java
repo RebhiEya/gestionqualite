@@ -3,6 +3,7 @@ package com.tim.gestionqualite.controller;
 
 import com.tim.gestionqualite.entity.Audit;
 import com.tim.gestionqualite.entity.AuditFile;
+import com.tim.gestionqualite.entity.QualityControl;
 import com.tim.gestionqualite.payloads.AuditProcessRequest;
 import com.tim.gestionqualite.payloads.AuditResponse;
 import com.tim.gestionqualite.service.AuditService;
@@ -34,7 +35,7 @@ public class AuditController {
 
     @PostMapping("add")
     public ResponseEntity<AuditResponse> addAudit(@RequestBody AuditProcessRequest request) {
-        AuditResponse updatedAudit = auditService.addAudit(request.getAudit(), request.getProcessId(), request.getChecklistIds());
+        AuditResponse updatedAudit = auditService.addAudit(request.getAudit(),request.getUserId(), request.getProcessId(), request.getChecklistIds());
         return ResponseEntity.ok(updatedAudit);
     }
 
@@ -61,5 +62,10 @@ public class AuditController {
     public ResponseEntity<List<AuditFile>> getAllFilesByAuditID(@PathVariable Long auditId) {
         List<AuditFile> files = auditService.getAllFilesByAuditID(auditId);
         return ResponseEntity.ok(files);
+    }
+    @GetMapping("getUserControls/{userId}")
+    public ResponseEntity <List<Audit>> getUserAudits(@PathVariable Long userId) {
+        List<Audit> audits = auditService.getAuditByUserId(userId);
+        return ResponseEntity.ok(audits);
     }
 }

@@ -4,24 +4,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "/User")
 @Entity
-public class User implements Serializable, UserDetails {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,28 +26,6 @@ public class User implements Serializable, UserDetails {
     private String email;
     private Set<RoleName> roles;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
 
     public Set<RoleName> getRoles() {
         return roles;
@@ -63,21 +33,6 @@ public class User implements Serializable, UserDetails {
 
     public void setRoles(Set<RoleName> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
 
@@ -121,6 +76,9 @@ public class User implements Serializable, UserDetails {
         return idUser;
     }
 
+    public String getPassword() {
+        return password;
+    }
 
     public void setPassword(String password) {
         this.password = password;

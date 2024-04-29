@@ -13,7 +13,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Produit")
 @Entity
 public class Produit {

@@ -12,6 +12,7 @@ public class AuditProcessRequest {
     private Audit audit ;
 
     private  Long processId ;
+    private Long userId;
 
     private Set<Long> checklistIds ;
 
@@ -37,5 +38,13 @@ public class AuditProcessRequest {
 
     public void setChecklistIds(Set<Long> checklistIds) {
         this.checklistIds = checklistIds;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

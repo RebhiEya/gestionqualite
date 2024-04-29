@@ -13,7 +13,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Processchecklist")
 @Entity
 public class ProcessChecklist implements Serializable {
@@ -97,5 +96,8 @@ public class ProcessChecklist implements Serializable {
 
     public void setProcesses(Set<Process> processes) {
         this.processes = processes;
+    }
+
+    public void setProcess(Process process) {
     }
 }

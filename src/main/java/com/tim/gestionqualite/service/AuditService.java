@@ -44,8 +44,12 @@ public class AuditService {
     }
 
     @Transactional
-    public AuditResponse addAudit(Audit audit, Long processId, Set<Long> checklistIds) {
+    public AuditResponse addAudit(Audit audit,Long userId, Long processId, Set<Long> checklistIds) {
         AuditResponse auditResponse = new AuditResponse();
+        // Step 1: Find the User by userId
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found"));
+        audit.setUser(user);
         // Step 1: Find the Process by processId
         Process process = processRepository.findById(processId)
                 .orElseThrow(() -> new IllegalArgumentException("Process with ID " + processId + " not found"));
@@ -190,5 +194,9 @@ public class AuditService {
 
         // Récupérer tous les fichiers associés à cet audit
         return audit.getAuditFiles();
+    }
+
+    public List<Audit> getAuditByUserId(Long userId) {
+        return auditRepository.findByUserIdUser(userId);
     }
 }

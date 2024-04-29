@@ -9,7 +9,6 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Auditfile")
 @Entity
 public class AuditFile implements Serializable {

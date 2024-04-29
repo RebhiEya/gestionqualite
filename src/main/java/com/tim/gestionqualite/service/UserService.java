@@ -1,10 +1,8 @@
 package com.tim.gestionqualite.service;
 
-import com.tim.gestionqualite.entity.Produit;
 import com.tim.gestionqualite.entity.User;
 import com.tim.gestionqualite.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +13,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUser() {
@@ -44,8 +40,6 @@ public class UserService {
 
 
     public User createdUser(User user) {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 }

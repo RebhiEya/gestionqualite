@@ -13,7 +13,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Controlchecklist")
 @Entity
 public class ControlChecklist implements Serializable  {

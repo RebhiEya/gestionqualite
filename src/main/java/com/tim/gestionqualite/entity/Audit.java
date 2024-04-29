@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,7 +13,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Audit")
 @Entity
 public class Audit implements Serializable {
@@ -29,6 +27,10 @@ public class Audit implements Serializable {
     private Date endDate;
     private String state;
     private String reference;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @JsonIgnore
     @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -108,5 +110,13 @@ public class Audit implements Serializable {
 
     public void setAuditFiles(List<AuditFile> auditFiles) {
         this.auditFiles = auditFiles;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
