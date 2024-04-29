@@ -33,13 +33,7 @@ public class Audit implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AuditProcessChecklist> processChecklist = new HashSet<>();
-    @ManyToMany
-    @JoinTable(
-            name = "audit_team",
-            joinColumns = @JoinColumn(name = "audit_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id")
-    )
-    private Set<Team> teams = new HashSet<>();
+
 
     @OneToMany(mappedBy = "audit", cascade = CascadeType.ALL)
     private List<AuditFile> auditFiles;
@@ -106,14 +100,6 @@ public class Audit implements Serializable {
 
     public void setProcessChecklist(Set<AuditProcessChecklist> processChecklist) {
         this.processChecklist = processChecklist;
-    }
-
-    public Set<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-        this.teams = teams;
     }
 
     public List<AuditFile> getAuditFiles() {

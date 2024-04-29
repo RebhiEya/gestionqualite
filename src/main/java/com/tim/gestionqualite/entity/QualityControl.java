@@ -24,6 +24,10 @@ public class QualityControl implements Serializable {
     private Date date;
     private String state;
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @OneToMany(mappedBy = "control", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProduitControlChecklist> controlChecklist = new HashSet<>();
 
@@ -35,14 +39,6 @@ public class QualityControl implements Serializable {
     )
     private List<ControlDefect> controlDefect = new ArrayList<>();
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "control_team",
-            joinColumns = @JoinColumn(name = "control_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id")
-    )
-    private Set<Team> teams = new HashSet<>();
     public Long getIdQualityControl() {
         return idQualityControl;
     }
@@ -107,12 +103,11 @@ public class QualityControl implements Serializable {
         this.controlDefect = controlDefect;
     }
 
-
-    public Set<Team> getTeams() {
-        return teams;
+    public User getUser() {
+        return user;
     }
 
-    public void setTeams(Set<Team> teams) {
-        this.teams = teams;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

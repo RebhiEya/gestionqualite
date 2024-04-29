@@ -22,4 +22,17 @@ public class ControlCheckListController {
         List<ControlChecklist> checklists = controlCheckListService.retrieveByProduit(idProduit);
         return ResponseEntity.ok(checklists);
     }
+    @GetMapping("getByIdControl/{idControl}")
+    public ResponseEntity<List<ControlChecklist>> getChecklistByControl(@PathVariable Long idControl){
+        List<ControlChecklist> checklists = controlCheckListService.retrieveByControl(idControl);
+        return ResponseEntity.ok(checklists);
+    }
+    @PutMapping("/updateConformity/{itemId}")
+    public ResponseEntity<ControlChecklist> updateConformity(
+            @PathVariable Long itemId,
+            @RequestParam boolean conformity
+    ){
+        ControlChecklist updatedItem = controlCheckListService.updateConformity(itemId, conformity);
+        return ResponseEntity.ok(updatedItem);
+    }
 }

@@ -9,6 +9,7 @@ public class QualityControlRequest {
     private QualityControl qualityControl;
 
     private Long produitId;
+    private Long userId;
 
     private Set<Long> checklistIds;
 
@@ -34,5 +35,13 @@ public class QualityControlRequest {
 
     public void setChecklistIds(Set<Long> checklistIds) {
         this.checklistIds = checklistIds;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

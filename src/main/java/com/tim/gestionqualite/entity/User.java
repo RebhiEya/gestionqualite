@@ -81,9 +81,6 @@ public class User implements Serializable, UserDetails {
     }
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserTeamRole> userTeamRoles = new ArrayList<>();
-
     public String getFirstName() {
         return firstName;
     }

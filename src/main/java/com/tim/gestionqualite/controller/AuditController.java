@@ -3,7 +3,6 @@ package com.tim.gestionqualite.controller;
 
 import com.tim.gestionqualite.entity.Audit;
 import com.tim.gestionqualite.entity.AuditFile;
-import com.tim.gestionqualite.payloads.AssignRolesAndAddToAuditRequest;
 import com.tim.gestionqualite.payloads.AuditProcessRequest;
 import com.tim.gestionqualite.payloads.AuditResponse;
 import com.tim.gestionqualite.service.AuditService;
@@ -26,16 +25,19 @@ public class AuditController {
         List<Audit> ListAudit = auditService.retrieveAllAudits();
         return ResponseEntity.ok(ListAudit);
     }
+
     @GetMapping("get/{auditId}")
     public ResponseEntity<Optional<Audit>> getAuditById(@PathVariable Long auditId) {
         Optional<Audit> audit = auditService.retrieveAuditById(auditId);
         return ResponseEntity.ok(audit);
     }
+
     @PostMapping("add")
     public ResponseEntity<AuditResponse> addAudit(@RequestBody AuditProcessRequest request) {
-      AuditResponse updatedAudit = auditService.addAudit(request.getAudit() , request.getProcessId(), request.getChecklistIds());
+        AuditResponse updatedAudit = auditService.addAudit(request.getAudit(), request.getProcessId(), request.getChecklistIds());
         return ResponseEntity.ok(updatedAudit);
     }
+
     @DeleteMapping("delete/{auditId}")
     public ResponseEntity<String> deleteAudit(@PathVariable Long auditId) {
         auditService.deleteAudit(auditId);
@@ -47,22 +49,7 @@ public class AuditController {
         AuditResponse audit = auditService.updateAudit(auditId, request.getAudit(), request.getProcessId(), request.getChecklistIds());
         return ResponseEntity.ok(audit);
     }
-    @PostMapping("/assign-roles-and-add-to-audit")
-    public ResponseEntity<String> assignRolesAndAddToAudit(@RequestBody AssignRolesAndAddToAuditRequest request) {
-        auditService.assignRolesToUsersInTeamAndAddTeamToAudit(
-                request.getUserIds(),
-                request.getController(),
-                request.getAuditeur()
-        );
-        return ResponseEntity.ok("Roles assigned and team added to audit successfully");
-    }
-    @PutMapping("/updateTeam")
-    public ResponseEntity<String> updateTeamAudit(@RequestParam Long teamId,
-                                                  @RequestParam Long auditId,
-                                                  @RequestBody AssignRolesAndAddToAuditRequest request) {
-        auditService.updateTeamAudit(teamId, auditId, request.getUserIds(), request.getAuditeur(), request.getController());
-        return ResponseEntity.ok("L'équipe a été mise à jour dans l'audit avec succès.");
-    }
+
 
     @PostMapping("/{auditId}/files")
     public ResponseEntity<String> addFileToAudit(@PathVariable Long auditId, @RequestBody AuditFile auditFile) {
