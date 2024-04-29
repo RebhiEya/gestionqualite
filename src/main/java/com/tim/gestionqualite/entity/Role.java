@@ -6,12 +6,10 @@ import lombok.*;
 import java.io.Serializable;
 
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Table(name = "Role")
 @Entity
-@Getter
-@Setter
 public class Role implements Serializable {
 
     @Id
@@ -19,9 +17,28 @@ public class Role implements Serializable {
             GenerationType.AUTO)
     private int id;
     @Enumerated(EnumType.STRING)
-    private RoleName role;
+    private RoleName name;
 
-    public RoleName getRole() {
-        return role;
+    public Role() {
+
+    }
+
+    public Role(RoleName name) {
+        this.name = name;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public RoleName getName() {
+        return name;
+    }
+
+    public void setName(RoleName name) {
+        this.name = name;
     }
 }
