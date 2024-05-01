@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tim.gestionqualite.repository.ProcessRepository;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ProcessChecklistService {
@@ -30,15 +32,16 @@ public class ProcessChecklistService {
     }
 
 
-    public List<ProcessChecklist> deleteProcessChecklist(Long idProcessChecklist) {
-        // Vérifiez d'abord si le produit existe
-        if (!processChecklistRepository.existsById(idProcessChecklist)) {
-            throw new IllegalArgumentException("ProcessChecklist not found");
-        }
-        // Supprimez le produit de la base de données
-        processChecklistRepository.deleteById(idProcessChecklist);
-        // renvoyer la liste des produits
-        return processChecklistRepository.findAll();
+    public List<ProcessChecklist> deleteProcessChecklist(Long processChecklistId) {
+            Optional<ProcessChecklist> optionalProcessChecklist = processChecklistRepository.findById(processChecklistId);
+            if (optionalProcessChecklist.isPresent()) {
+                ProcessChecklist processChecklist = optionalProcessChecklist.get();
+                processChecklist.getProcesses().forEach(process -> process.getProcessChecklist().remove(processChecklist));
+                processChecklistRepository.delete(processChecklist);
+               return processChecklistRepository.findAll();
+            } else {
+                throw new NoSuchElementException("Process Checklist not found with id: " + processChecklistId);
+            }
     }
     public List<ProcessChecklist> retrieveByProcess(Long idProcess) {
         processRepository.findById(idProcess).orElseThrow(() -> new IllegalArgumentException("Process not found"));

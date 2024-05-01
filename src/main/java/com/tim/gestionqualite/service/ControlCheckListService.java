@@ -1,6 +1,7 @@
 package com.tim.gestionqualite.service;
 
 import com.tim.gestionqualite.entity.ControlChecklist;
+import com.tim.gestionqualite.entity.ProcessChecklist;
 import com.tim.gestionqualite.repository.ControlCheckListRepository;
 import com.tim.gestionqualite.repository.ProduitRepository;
 import com.tim.gestionqualite.repository.QualityControlRepository;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ControlCheckListService {
@@ -41,5 +44,15 @@ public class ControlCheckListService {
         // Enregistrer les modifications dans la base de données
         return controlCheckListRepository.save(checklistItem);
     }
-
+    public List<ControlChecklist> deleteControlChecklist(Long controlChecklistId) {
+        Optional<ControlChecklist> optionalProcessChecklist = controlCheckListRepository.findById(controlChecklistId);
+        if (optionalProcessChecklist.isPresent()) {
+            ControlChecklist produitChecklist = optionalProcessChecklist.get();
+            produitChecklist.getProduits().forEach(produit -> produit.getProduitChecklist().remove(produitChecklist));
+            controlCheckListRepository.delete(produitChecklist);
+            return controlCheckListRepository.findAll();
+        } else {
+            throw new NoSuchElementException("Control Checklist not found with id: " + controlChecklistId);
+        }
+    }
 }

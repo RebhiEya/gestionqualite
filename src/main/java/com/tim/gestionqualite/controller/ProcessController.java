@@ -61,9 +61,8 @@ public class ProcessController {
     }
 
     @GetMapping("/getByProcess/{processId}")
-    public ResponseEntity<List<ProcessChecklist>> getchecklist(@PathVariable Long prossesId) {
-        System.out.println(prossesId);
-        List<ProcessChecklist> CheckList =  processService.getchecklist(prossesId);
+    public ResponseEntity<List<ProcessChecklist>> getchecklist(@PathVariable Long processId) {
+        List<ProcessChecklist> CheckList =  processService.getchecklist(processId);
         return ResponseEntity.ok(CheckList);
     }
     @GetMapping("get/{prossesId}")

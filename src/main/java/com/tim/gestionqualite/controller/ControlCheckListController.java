@@ -1,6 +1,7 @@
 package com.tim.gestionqualite.controller;
 
 import com.tim.gestionqualite.entity.ControlChecklist;
+import com.tim.gestionqualite.entity.ProcessChecklist;
 import com.tim.gestionqualite.entity.Produit;
 import com.tim.gestionqualite.service.ControlCheckListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,11 @@ public class ControlCheckListController {
     ){
         ControlChecklist updatedItem = controlCheckListService.updateConformity(itemId, conformity);
         return ResponseEntity.ok(updatedItem);
+    }
+
+    @DeleteMapping("delete/{idControlChecklist}")
+    public ResponseEntity<List<ControlChecklist>> deleteProcesschecklist(@PathVariable Long idControlChecklist) {
+        List<ControlChecklist> listChecklistProduits =  controlCheckListService.deleteControlChecklist(idControlChecklist);
+        return ResponseEntity.ok(listChecklistProduits);
     }
 }
