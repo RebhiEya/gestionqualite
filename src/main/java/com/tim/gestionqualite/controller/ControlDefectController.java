@@ -37,6 +37,7 @@ public class ControlDefectController {
     }
 
     @PutMapping("/update/{id}")
+
     public ControlDefect updateDefect(@PathVariable Long id, @RequestBody ControlDefect updateDefect) {
         return controlDefectService.updateDefect(id, updateDefect);
     }
