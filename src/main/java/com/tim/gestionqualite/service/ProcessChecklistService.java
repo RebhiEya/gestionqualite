@@ -1,9 +1,8 @@
 package com.tim.gestionqualite.service;
 
-import com.tim.gestionqualite.entity.ControlChecklist;
+import com.tim.gestionqualite.entity.*;
 import com.tim.gestionqualite.entity.Process;
-import com.tim.gestionqualite.entity.ProcessChecklist;
-import com.tim.gestionqualite.entity.Produit;
+import com.tim.gestionqualite.repository.AuditProcessChecklistRepository;
 import com.tim.gestionqualite.repository.AuditRepository;
 import com.tim.gestionqualite.repository.ProcessChecklistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ public class ProcessChecklistService {
 
     @Autowired
     ProcessChecklistRepository processChecklistRepository;
+    @Autowired
+    AuditProcessChecklistRepository auditProcessChecklistRepository;
 
     public ProcessChecklist addChecklist(ProcessChecklist checklist) {
        return processChecklistRepository.save(checklist);
@@ -54,7 +55,16 @@ public class ProcessChecklistService {
         return processChecklistRepository.findByAuditProcessChecklistIdAuditId(idAudit);
     }
 
+    public void updateConformityForChecklist(Long auditId, Long checklistId, boolean newConformityValue) {
+        AuditProcessChecklist auditProcessChecklist = auditProcessChecklistRepository.findByAuditIdAuditAndProcessChecklistIdProcessChecklist(auditId, checklistId);
 
+        if (auditProcessChecklist != null) {
+            auditProcessChecklist.setConformity(newConformityValue);
+            auditProcessChecklistRepository.save(auditProcessChecklist);
+        } else {
+            throw new IllegalArgumentException("association not found");
+        }
+    }
 
 }
 

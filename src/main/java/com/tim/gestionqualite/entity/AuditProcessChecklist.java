@@ -16,18 +16,20 @@ public class AuditProcessChecklist {
     private AuditProcessChecklistId id;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("auditId")
     private Audit audit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("processId")
     private Process process;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("checklistId")
     private ProcessChecklist processChecklist;
 
+    @Column(nullable = true)
+    private Boolean conformity;
     public AuditProcessChecklistId getId() {
         return id;
     }
@@ -58,6 +60,22 @@ public class AuditProcessChecklist {
 
     public void setChecklist(ProcessChecklist checklist) {
         this.processChecklist = checklist;
+    }
+
+    public ProcessChecklist getProcessChecklist() {
+        return processChecklist;
+    }
+
+    public void setProcessChecklist(ProcessChecklist processChecklist) {
+        this.processChecklist = processChecklist;
+    }
+
+    public Boolean getConformity() {
+        return conformity;
+    }
+
+    public void setConformity(Boolean conformity) {
+        this.conformity = conformity;
     }
 }
 

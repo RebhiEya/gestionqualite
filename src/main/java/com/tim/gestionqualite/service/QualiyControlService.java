@@ -68,6 +68,7 @@ public class QualiyControlService {
                 produitControlChecklist.setControl(qualityControl);
                 produitControlChecklist.setProduit(produit);
                 produitControlChecklist.setProduitChecklist(checklist);
+                produitControlChecklist.setConformity(null);
 
                 produitControlChecklists.add(produitControlChecklist);
             }

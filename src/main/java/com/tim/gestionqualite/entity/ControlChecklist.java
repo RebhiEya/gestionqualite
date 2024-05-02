@@ -23,7 +23,6 @@ public class ControlChecklist implements Serializable  {
     private String category;
     private String criteria;
     private String operation;
-    private Boolean conformity;
     private String defects;
     private Number measures;
     private String description;
@@ -68,13 +67,6 @@ public class ControlChecklist implements Serializable  {
         this.operation = operation;
     }
 
-    public Boolean getConformity() {
-        return conformity;
-    }
-
-    public void setConformity(Boolean conformity) {
-        this.conformity = conformity;
-    }
 
     public String getDefects() {
         return defects;

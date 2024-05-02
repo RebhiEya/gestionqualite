@@ -1,16 +1,16 @@
 package com.tim.gestionqualite.service;
 
 import com.tim.gestionqualite.entity.ControlChecklist;
-import com.tim.gestionqualite.entity.ProcessChecklist;
+import com.tim.gestionqualite.entity.ProduitControlChecklist;
+import com.tim.gestionqualite.payloads.ChecklistConformityDTO;
 import com.tim.gestionqualite.repository.ControlCheckListRepository;
+import com.tim.gestionqualite.repository.ProduitControlChecklistRepository;
 import com.tim.gestionqualite.repository.ProduitRepository;
 import com.tim.gestionqualite.repository.QualityControlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ControlCheckListService {
@@ -19,6 +19,10 @@ public class ControlCheckListService {
     ControlCheckListRepository controlCheckListRepository;
     @Autowired
     ProduitRepository produitRepository;
+
+    @Autowired
+    ProduitControlChecklistRepository produitControlChecklistRepository;
+
 
     @Autowired
     QualityControlRepository qualityControlRepository;
@@ -34,25 +38,29 @@ public class ControlCheckListService {
         return controlCheckListRepository.findByProduitControlChecklistIdControlId(idControl);
     }
 
-    public ControlChecklist updateConformity(Long itemId, boolean conformity) {
-        ControlChecklist checklistItem = controlCheckListRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("Control Checklist Item not found"));
+    public void updateConformityForChecklist(Long controlId, Long checklistId, boolean newConformityValue) {
+        ProduitControlChecklist produitControlChecklist = produitControlChecklistRepository.findByControlIdQualityControlAndProduitChecklistIdControlCheckList(controlId, checklistId);
 
-        // Mettre à jour la conformité de l'élément de la checklist
-        checklistItem.setConformity(conformity);
-
-        // Enregistrer les modifications dans la base de données
-        return controlCheckListRepository.save(checklistItem);
-    }
-    public List<ControlChecklist> deleteControlChecklist(Long controlChecklistId) {
-        Optional<ControlChecklist> optionalProcessChecklist = controlCheckListRepository.findById(controlChecklistId);
-        if (optionalProcessChecklist.isPresent()) {
-            ControlChecklist produitChecklist = optionalProcessChecklist.get();
-            produitChecklist.getProduits().forEach(produit -> produit.getProduitChecklist().remove(produitChecklist));
-            controlCheckListRepository.delete(produitChecklist);
-            return controlCheckListRepository.findAll();
+        if (produitControlChecklist != null) {
+            produitControlChecklist.setConformity(newConformityValue);
+            produitControlChecklistRepository.save(produitControlChecklist);
         } else {
-            throw new NoSuchElementException("Control Checklist not found with id: " + controlChecklistId);
+            throw new IllegalArgumentException("association not found");
         }
     }
+    public List<ChecklistConformityDTO> getChecklistsAndConformityByControlId(Long controlId) {
+        List<ProduitControlChecklist> produitControlChecklists = produitControlChecklistRepository.findByControlIdQualityControl(controlId);
+        List<ChecklistConformityDTO> checklistConformityDTOList = new ArrayList<>();
+
+        for (ProduitControlChecklist produitControlChecklist : produitControlChecklists) {
+            ControlChecklist controlChecklist = controlCheckListRepository.findById(produitControlChecklist.getId().getChecklistId()).orElse(null);
+            if (controlChecklist != null) {
+                ChecklistConformityDTO checklistConformityDTO = new ChecklistConformityDTO(controlChecklist, produitControlChecklist.getConformity());
+                checklistConformityDTOList.add(checklistConformityDTO);
+            }
+        }
+
+        return checklistConformityDTOList;
+    }
+
 }

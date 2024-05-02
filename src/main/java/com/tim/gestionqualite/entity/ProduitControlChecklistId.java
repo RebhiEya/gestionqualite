@@ -39,4 +39,5 @@ public class ProduitControlChecklistId {
     public void setChecklistId(Long checklistId) {
         this.checklistId = checklistId;
     }
+
 }

@@ -46,8 +46,12 @@ public class ProcessChecklistController {
         return ResponseEntity.ok(checklists);
     }
 
-
-
-
+    @PutMapping("/updateConformity")
+    public ResponseEntity<String> updateConformity(@RequestParam Long auditId,
+                                                   @RequestParam Long checklistId,
+                                                   @RequestParam boolean conformity) {
+        processChecklistService.updateConformityForChecklist(auditId, checklistId, conformity);
+        return ResponseEntity.ok("Conformity updated successfully");
+    }
 
 }

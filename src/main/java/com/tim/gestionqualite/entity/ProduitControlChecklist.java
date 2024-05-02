@@ -11,17 +11,19 @@ public class ProduitControlChecklist {
     private ProduitControlChecklistId id;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("controlId")
     private QualityControl control;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("produitId")
     private Produit produit;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("checklistId")
     private ControlChecklist produitChecklist;
+    @Column(nullable = true)
+    private Boolean conformity;
 
     public ProduitControlChecklistId getId() {
         return id;
@@ -53,5 +55,13 @@ public class ProduitControlChecklist {
 
     public void setProduitChecklist(ControlChecklist produitChecklist) {
         this.produitChecklist = produitChecklist;
+    }
+
+    public Boolean getConformity() {
+        return conformity;
+    }
+
+    public void setConformity(Boolean conformity) {
+        this.conformity = conformity;
     }
 }
