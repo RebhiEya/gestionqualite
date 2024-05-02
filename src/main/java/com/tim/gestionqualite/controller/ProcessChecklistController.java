@@ -38,6 +38,7 @@ public class ProcessChecklistController {
     public ResponseEntity<List<ProcessChecklist>> getChecklistByProcess(@PathVariable Long idProcess){
         List<ProcessChecklist> checklists = processChecklistService.retrieveByProcess(idProcess);
         return ResponseEntity.ok(checklists);
+
     }
 
     @GetMapping("getByIdAudit/{idAudit}")
