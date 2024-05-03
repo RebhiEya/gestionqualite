@@ -2,12 +2,15 @@ package com.tim.gestionqualite.service;
 
 import com.tim.gestionqualite.entity.*;
 import com.tim.gestionqualite.entity.Process;
+import com.tim.gestionqualite.payloads.ChecklistConformityDTO;
 import com.tim.gestionqualite.repository.AuditProcessChecklistRepository;
 import com.tim.gestionqualite.repository.AuditRepository;
 import com.tim.gestionqualite.repository.ProcessChecklistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tim.gestionqualite.repository.ProcessRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -65,7 +68,20 @@ public class ProcessChecklistService {
             throw new IllegalArgumentException("association not found");
         }
     }
+    public List<ChecklistConformityDTO> getChecklistsAndConformityByAuditId(Long controlId) {
+        List<AuditProcessChecklist> auditProcessChecklists = auditProcessChecklistRepository.findByAuditIdAudit(controlId);
+        List<ChecklistConformityDTO> checklistConformityDTOList = new ArrayList<>();
 
+        for (AuditProcessChecklist auditProcessChecklist : auditProcessChecklists) {
+            ProcessChecklist processChecklist = processChecklistRepository.findById(auditProcessChecklist.getId().getChecklistId()).orElse(null);
+            if (processChecklist != null) {
+                ChecklistConformityDTO checklistConformityDTO = new ChecklistConformityDTO(processChecklist, auditProcessChecklist.getConformity());
+                checklistConformityDTOList.add(checklistConformityDTO);
+            }
+        }
+
+        return checklistConformityDTOList;
+    }
 }
 
 
