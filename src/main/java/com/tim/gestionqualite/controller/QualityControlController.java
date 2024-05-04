@@ -1,6 +1,8 @@
 package com.tim.gestionqualite.controller;
 
+import com.tim.gestionqualite.entity.ControlDefect;
 import com.tim.gestionqualite.entity.QualityControl;
+import com.tim.gestionqualite.payloads.AddControlDefectsRequest;
 import com.tim.gestionqualite.payloads.ControlResponse;
 import com.tim.gestionqualite.payloads.QualityControlRequest;
 import com.tim.gestionqualite.service.QualiyControlService;
@@ -55,5 +57,10 @@ public class QualityControlController {
     public ResponseEntity <List<QualityControl>> getUserControls(@PathVariable Long userId) {
         List<QualityControl> controls = qualiyControlService.getQualityControlsByUserId(userId);
         return ResponseEntity.ok(controls);
+    }
+    @PostMapping("addControlDefects/{controlId}")
+    public void addControlDefectsToControl(@PathVariable Long controlId, @RequestBody AddControlDefectsRequest request) {
+        List<Long> controlDefectIdsToAdd = request.getControlDefects();
+        qualiyControlService.addControlDefectsToControl(controlId, controlDefectIdsToAdd);
     }
 }

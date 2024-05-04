@@ -31,6 +31,7 @@ public class QualiyControlService {
         return (List<QualityControl>) qualityControlRepository.findAll();
     }
 
+
     @Transactional
     public ControlResponse addQualityControl(QualityControl qualityControl,Long userId, Long produitId, Set<Long> checklistIds) {
         ControlResponse controlResponse = new ControlResponse();
@@ -173,4 +174,23 @@ public class QualiyControlService {
     public List<QualityControl> getQualityControlsByUserId(Long userId) {
         return qualityControlRepository.findByUserIdUser(userId);
     }
+
+    public void addControlDefectsToControl(Long controlId, List<Long> controlDefectIdsToAdd) {
+        QualityControl control = qualityControlRepository.findById(controlId)
+                .orElseThrow(() -> new RuntimeException("Control with ID " + controlId + " not found"));
+
+        for (Long controlDefectId : controlDefectIdsToAdd) {
+            ControlDefect controlDefect = controlDefectRepository.findById(controlDefectId)
+                    .orElseThrow(() -> new RuntimeException("ControlDefect with ID " + controlDefectId + " not found"));
+
+            // Check if the association already exists
+            if (!control.getControlDefect().contains(controlDefect)) {
+                control.getControlDefect().add(controlDefect);
+                controlDefect.getQualityControls().add(control);
+            }
+        }
+        // Save or update control in database if necessary
+        qualityControlRepository.save(control);
+    }
+
 }
