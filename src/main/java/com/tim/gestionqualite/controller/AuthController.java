@@ -87,7 +87,6 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(user);
     }
-
 }

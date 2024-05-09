@@ -32,7 +32,6 @@ public class UserController {
 
     }
 
-
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User user) {
         user.setIdUser(id); // Assure que l'id est défini pour la mise à jour

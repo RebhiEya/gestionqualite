@@ -63,7 +63,7 @@ public class AuditController {
         List<AuditFile> files = auditService.getAllFilesByAuditID(auditId);
         return ResponseEntity.ok(files);
     }
-    @GetMapping("getUserControls/{userId}")
+    @GetMapping("getUserAudit/{userId}")
     public ResponseEntity <List<Audit>> getUserAudits(@PathVariable Long userId) {
         List<Audit> audits = auditService.getAuditByUserId(userId);
         return ResponseEntity.ok(audits);
